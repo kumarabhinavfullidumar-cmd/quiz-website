@@ -4,60 +4,218 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>My Quiz 🧠</title>
+    <title>GK Quiz | Created by Abhinav</title>
 
     <style>
         * {
             box-sizing: border-box;
         }
 
-        body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+        html {
+            scroll-behavior: smooth;
         }
 
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f8ff;
+            color: #102a56;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: #061b48;
+            color: white;
+            min-height: 75px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 4%;
+            border-bottom: 1px solid #168cff;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #ffd21c;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px;
+            font-size: 18px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .creator-card {
+            border: 2px solid #168cff;
+            border-radius: 20px;
+            padding: 7px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .creator-card img {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #168cff;
+        }
+
+        .creator-card small {
+            display: block;
+        }
+
+        .creator-card strong {
+            color: #ffd21c;
+            font-size: 20px;
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 400px;
+            padding: 45px 7%;
+            background: linear-gradient(135deg, #06245d, #0646aa);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 70px;
+        }
+
+        .hero-photo {
+            text-align: center;
+        }
+
+        .hero-photo img {
+            width: 240px;
+            height: 240px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 6px solid #20b8ff;
+            box-shadow: 0 0 0 8px rgba(255,255,255,0.12);
+        }
+
+        .hello {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .hero-content h1 {
+            font-size: 65px;
+            margin: 5px 0;
+        }
+
+        .hero-content h1 span {
+            color: #ffd21c;
+        }
+
+        .hero-content h2 {
+            font-size: 25px;
+            margin: 10px 0 20px;
+        }
+
+        .features-text {
+            font-size: 17px;
+            margin-bottom: 25px;
+        }
+
+        .start-btn {
+            display: inline-block;
+            background: #ffd21c;
+            color: #071d4c;
+            padding: 16px 35px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* FEATURE CARDS */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            padding: 35px 5%;
+            background: white;
+        }
+
+        .feature-card {
+            padding: 25px 15px;
+            text-align: center;
+            border-radius: 18px;
+            background: #f0f6ff;
+        }
+
+        .feature-icon {
+            font-size: 42px;
+        }
+
+        .feature-card h3 {
+            margin: 12px 0 5px;
+        }
+
+        .feature-card p {
+            margin: 0;
+        }
+
+        /* QUIZ */
+        #quiz-section {
+    display: none;
+    padding: 50px 20px;
+    background: #eef4ff;
+}
+
         .quiz-box {
-            width: 100%;
-            max-width: 600px;
+            max-width: 650px;
+            margin: auto;
             background: white;
             padding: 30px;
             border-radius: 24px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+            box-shadow: 0 10px 35px rgba(0,0,0,0.12);
         }
 
-        h1 {
+        .quiz-box h2 {
             text-align: center;
-            margin-top: 0;
-            font-size: 32px;
+        }
+
+        #playerName {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-size: 16px;
+            margin-bottom: 20px;
         }
 
         .top-bar {
             display: flex;
             justify-content: space-between;
-            align-items: center;
             gap: 10px;
-            margin-bottom: 20px;
         }
 
         #timer,
         #score {
-            margin: 0;
+            background: #eef3fa;
             padding: 10px 14px;
             border-radius: 12px;
-            background: #f1f3f6;
             font-weight: bold;
         }
 
         #question {
             font-size: 23px;
             line-height: 1.4;
-            margin: 25px 0;
         }
 
         #options {
@@ -69,19 +227,17 @@
         #options button {
             width: 100%;
             padding: 15px;
-            border: 2px solid #e1e1e1;
+            border: 2px solid #e0e0e0;
             border-radius: 14px;
             background: white;
             cursor: pointer;
             font-size: 17px;
             text-align: left;
-            transition: 0.2s;
         }
 
         #options button:hover {
-            transform: translateY(-2px);
-            background: #f4f4ff;
-            border-color: #667eea;
+            background: #edf3ff;
+            border-color: #168cff;
         }
 
         #next {
@@ -90,56 +246,123 @@
             margin-top: 22px;
             border: none;
             border-radius: 14px;
-            background: #222;
+            background: #09295f;
             color: white;
             font-size: 17px;
             cursor: pointer;
         }
 
-        #next:hover {
-            background: #444;
+        /* ABOUT */
+        .about {
+            background: #061d4c;
+            color: white;
+            padding: 55px 7%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 35px;
         }
 
-        .result {
-            text-align: center;
+        .about img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 5px solid #168cff;
         }
 
-        .result h2 {
-            font-size: 28px;
+        .about h2 {
+            color: #ffd21c;
+            font-size: 38px;
+            margin: 5px 0;
+        }
+
+        .about h3 {
+            margin: 5px 0;
+        }
+
+        .about p {
+            max-width: 550px;
+            line-height: 1.6;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #031638;
+            color: white;
+            padding: 18px 5%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* MOBILE */
+        @media (max-width: 900px) {
+
+            .features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                gap: 25px;
+            }
+
+            .hero-content h1 {
+                font-size: 48px;
+            }
         }
 
         @media (max-width: 600px) {
 
-            body {
-                padding: 12px;
+            .creator-card {
+                padding: 5px 8px;
             }
 
-            .quiz-box {
-                padding: 20px;
-                border-radius: 18px;
+            .creator-card img {
+                width: 40px;
+                height: 40px;
             }
 
-            h1 {
-                font-size: 26px;
+            .creator-card strong {
+                font-size: 15px;
             }
 
-            #question {
+            .hero {
+                padding: 35px 20px;
+            }
+
+            .hero-photo img {
+                width: 190px;
+                height: 190px;
+            }
+
+            .hero-content h1 {
+                font-size: 42px;
+            }
+
+            .hero-content h2 {
                 font-size: 20px;
             }
 
-            #options button {
-                font-size: 16px;
-                padding: 14px;
+            .features {
+                grid-template-columns: 1fr;
+                padding: 25px 20px;
             }
 
-            .top-bar {
+            .about {
                 flex-direction: column;
-                align-items: stretch;
+                text-align: center;
             }
 
-            #timer,
-            #score {
+            footer {
+                flex-direction: column;
                 text-align: center;
+                gap: 10px;
             }
         }
     </style>
@@ -147,31 +370,182 @@
 
 <body>
 
-<div class="quiz-box">
+<!-- NAVBAR -->
+<nav class="navbar">
 
-    <h1>🧠 My Quiz</h1>
-
-<input
-    id="playerName"
-    type="text"
-    placeholder="अपना नाम लिखें"
-    maxlength="30"
->
-
-    <div class="top-bar">
-        <p id="timer">⏱️ Time: 15</p>
-        <p id="score">🏆 Score: 0</p>
+    <div class="logo">
+        💡 GK <span>Quiz</span>
     </div>
 
-    <h2 id="question">Question loading...</h2>
+    <div class="nav-links">
+        <a href="#">🏠 Home</a>
+        <a href="#quiz-section">🏆 Quiz</a>
+        <a href="#about">ⓘ About</a>
+    </div>
 
-    <div id="options"></div>
+    <div class="creator-card">
+        <img src="{{ url_for('static', filename='profile.jpg') }}">
+        <div>
+            <small>Created by</small>
+            <strong>Abhinav</strong>
+        </div>
+    </div>
 
-    <button id="next" onclick="nextQuestion()">
-        Next Question ➡️
-    </button>
+</nav>
 
-</div>
+
+<!-- HERO -->
+<section class="hero">
+
+    <div class="hero-photo">
+
+        <p class="hello">Hi, I'm Abhinav 👋</p>
+
+        <img src="{{ url_for('static', filename='profile.jpg') }}">
+
+    </div>
+
+
+    <div class="hero-content">
+
+        <h1>GK <span>Quiz</span></h1>
+
+        <h2>
+            Test Your Knowledge, Improve Your Mind!
+        </h2>
+
+        <p class="features-text">
+            50+ General Knowledge Questions
+            &nbsp; | &nbsp;
+            Timer
+            &nbsp; | &nbsp;
+            Save Your Score
+            &nbsp; | &nbsp;
+            Leaderboard
+        </p>
+
+        <button class="start-btn" onclick="startQuiz()">
+    ▶ Start Quiz
+</button>
+
+    </div>
+
+</section>
+
+
+<!-- FEATURES -->
+<section class="features">
+
+    <div class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <h3>50+ Questions</h3>
+        <p>Challenge yourself</p>
+    </div>
+
+    <div class="feature-card">
+        <div class="feature-icon">⏱️</div>
+        <h3>Timer</h3>
+        <p>Stay focused</p>
+    </div>
+
+    <div class="feature-card">
+        <div class="feature-icon">👤</div>
+        <h3>Player Name</h3>
+        <p>Your identity</p>
+    </div>
+
+    <div class="feature-card">
+        <div class="feature-icon">🏆</div>
+        <h3>Leaderboard</h3>
+        <p>See top scores</p>
+    </div>
+
+    <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <h3>Mobile Friendly</h3>
+        <p>Play anywhere</p>
+    </div>
+
+</section>
+
+
+<!-- QUIZ -->
+<section id="quiz-section">
+
+    <div class="quiz-box">
+
+        <h2>🧠 Let's Start the Quiz!</h2>
+
+        <input
+            id="playerName"
+            type="text"
+            placeholder="अपना नाम लिखें"
+            maxlength="30"
+        >
+
+        <div class="top-bar">
+
+            <p id="timer">⏱️ Time: 15</p>
+
+            <p id="score">🏆 Score: 0</p>
+
+        </div>
+         <p id="questionNumber">Question 1 / 50</p>
+
+        <h2 id="question">
+            Question loading...
+        </h2>
+
+        <div id="options"></div>
+
+        <button id="next" onclick="nextQuestion()">
+            Next Question ➡️
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- ABOUT CREATOR -->
+<section class="about" id="about">
+
+    <img src="{{ url_for('static', filename='profile.jpg') }}">
+
+    <div>
+
+        <p>About the Creator</p>
+
+        <h2>Abhinav</h2>
+
+        <h3>Web Developer & Quiz Creator</h3>
+
+        <p>
+            I created this GK Quiz website to make learning
+            fun and help people improve their general knowledge.
+        </p>
+
+        <strong>
+            Built with ❤️ by Abhinav
+        </strong>
+
+    </div>
+
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+
+    <div>
+        © 2026 GK Quiz. All rights reserved.
+    </div>
+
+    <div>
+        Created by Abhinav ❤️
+    </div>
+
+</footer>
 
 
 <script>
@@ -183,6 +557,13 @@ let score = 0;
 let timeLeft = 15;
 let timer;
 
+function startQuiz() {
+    document.getElementById("quiz-section").style.display = "block";
+
+    document.getElementById("quiz-section").scrollIntoView({
+        behavior: "smooth"
+    });
+}
 
 async function loadQuiz() {
 
@@ -203,18 +584,18 @@ function showQuestion() {
     document.getElementById("timer").innerText =
         "⏱️ Time: " + timeLeft;
 
-
     let q = questions[currentQuestion];
+  
+    document.getElementById("questionNumber").innerText =
+    "Question " + (currentQuestion + 1) + " / " + questions.length;
 
     document.getElementById("question").innerText =
         q.question;
-
 
     let options =
         document.getElementById("options");
 
     options.innerHTML = "";
-
 
     q.options.forEach(function(option) {
 
@@ -223,13 +604,11 @@ function showQuestion() {
 
         button.innerText = option;
 
-
         button.onclick = function() {
 
             checkAnswer(option);
 
         };
-
 
         options.appendChild(button);
 
@@ -242,7 +621,6 @@ function showQuestion() {
 
         document.getElementById("timer").innerText =
             "⏱️ Time: " + timeLeft;
-
 
         if (timeLeft <= 0) {
 
@@ -260,68 +638,55 @@ function checkAnswer(answer) {
 
     clearInterval(timer);
 
+    let buttons = document.querySelectorAll("#options button");
+    let correctAnswer = questions[currentQuestion].answer;
 
-    if (answer === questions[currentQuestion].answer) {
+    buttons.forEach(function(button) {
+
+        button.disabled = true;
+
+        if (button.innerText === correctAnswer) {
+            button.style.background = "#d4edda";
+            button.style.borderColor = "#28a745";
+        }
+
+        if (button.innerText === answer && answer !== correctAnswer) {
+            button.style.background = "#f8d7da";
+            button.style.borderColor = "#dc3545";
+        }
+
+    });
+
+    if (answer === correctAnswer) {
 
         score++;
 
-        alert("✅ सही जवाब!");
-
-    } else {
-
-        alert("❌ गलत जवाब!");
+        document.getElementById("score").innerText =
+            "🏆 Score: " + score;
 
     }
 
-
-    document.getElementById("score").innerText =
-        "🏆 Score: " + score;
 }
 
-async function saveScore() {
 
-    let name = document.getElementById("playerName").value.trim();
+async function showLeaderboard() {
 
-    if (name === "") {
-        name = "Anonymous";
-    }
+    let response =
+        await fetch("/api/scores");
 
-    await fetch("/api/scores", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            name: name,
-            score: score
-        })
-    });
-}
+    let scores =
+        await response.json();
 
-function nextQuestion() {
-
-    currentQuestion++;
-
-
-    if (currentQuestion < questions.length) {
-
-        showQuestion();
-
-    } else {
-
-        saveScore();
-         
-    async function showLeaderboard() {
-
-    let response = await fetch("/api/scores");
-
-    let scores = await response.json();
-
-    let leaderboard = "<h2>🏆 Leaderboard</h2>";
+    let leaderboard =
+        "<h2>🏆 Leaderboard</h2>";
 
     if (scores.length === 0) {
-        leaderboard += "<p>अभी कोई score नहीं है।</p>";
+
+        leaderboard +=
+            "<p>अभी कोई score नहीं है।</p>";
+
     } else {
+
         scores.forEach(function(item, index) {
 
             leaderboard +=
@@ -332,17 +697,35 @@ function nextQuestion() {
                 " — " +
                 item.score +
                 "</p>";
+
         });
+
     }
 
     document.getElementById("options").innerHTML =
         leaderboard;
 }
+
+
+async function nextQuestion() {
+
+    currentQuestion++;
+
+    if (currentQuestion < questions.length) {
+
+        showQuestion();
+
+    } else {
+
+        clearInterval(timer);
+
+        await saveScore();
+
         document.getElementById("question").innerText =
             "🎉 Quiz Complete!";
 
         document.getElementById("options").innerHTML =
-            "<div class='result'>" +
+            "<div style='text-align:center'>" +
             "<h2>🏆 Final Score</h2>" +
             "<h2>" +
             score +
@@ -354,7 +737,8 @@ function nextQuestion() {
         document.getElementById("next").style.display =
             "none";
 
-        showLeaderboard();
+        await showLeaderboard();
+
     }
 }
 
