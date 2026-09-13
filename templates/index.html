@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Quiz</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .quiz-box {
+            background: white;
+            width: 500px;
+            max-width: 90%;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        #question {
+            margin: 25px 0;
+        }
+
+        #options button {
+            width: 100%;
+            padding: 14px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #options button:hover {
+            background: #eeeeee;
+        }
+
+        #next {
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 10px;
+            background: black;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #score {
+            font-weight: bold;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="quiz-box">
+
+    <h1>🧠 My Quiz</h1>
+    
+    <p id="timer">⏱️ Time: 15</p>
+    
+    <h2 id="question">Question loading...</h2>
+
+    <div id="options"></div>
+
+    <p id="score">Score: 0</p>
+
+    <button id="next" onclick="nextQuestion()">
+        Next Question ➡️
+    </button>
+
+</div>
+
+<script>
+
+let timeLeft = 15;
+let timer;
+
+timer = setInterval(function() {
+
+    timeLeft--;
+
+    document.getElementById("timer").innerText =
+        "⏱️ Time: " + timeLeft;
+
+    if (timeLeft <= 0) {
+
+        clearInterval(timer);
+
+        alert("⏰ Time Up!");
+
+    }
+
+}, 1000);
+
+let questions = [];
+let currentQuestion = 0;
+let score = 0;
+
+async function loadQuiz() {
+
+    let response = await fetch("/api/questions");
+
+    questions = await response.json();
+
+    showQuestion();
+}
+
+function showQuestion() {
+
+    clearInterval(timer);
+    timeLeft = 15;
+
+    let q = questions[currentQuestion];
+
+    document.getElementById("question").innerText =
+        q.question;
+
+    let options = document.getElementById("options");
+
+    options.innerHTML = "";
+
+    q.options.forEach(function(option) {
+
+        let button = document.createElement("button");
+
+        button.innerText = option;
+
+        button.onclick = function() {
+            checkAnswer(option);
+        };
+
+        options.appendChild(button);
+    });
+}
+
+function checkAnswer(answer) {
+
+    clearInterval(timer);
+
+    if (answer === questions[currentQuestion].answer) {
+
+        score++;
+        alert("✅ सही जवाब!");
+
+    } else {
+
+        alert("❌ गलत जवाब!");
+    }
+
+    document.getElementById("score").innerText =
+        "Score: " + score;
+}
+
+function nextQuestion() {
+
+    currentQuestion++;
+
+    if (currentQuestion < questions.length) {
+
+        showQuestion();
+
+    } else {
+
+        document.getElementById("question").innerText =
+            "🏆 Quiz Complete!";
+
+        document.getElementById("options").innerHTML =
+            "<h2>Final Score: " +
+            score + "/" +
+            questions.length +
+            "</h2>";
+    }
+}
+
+loadQuiz();
+
+</script>
+
+</body>
+</html>
