@@ -151,6 +151,13 @@
 
     <h1>🧠 My Quiz</h1>
 
+<input
+    id="playerName"
+    type="text"
+    placeholder="अपना नाम लिखें"
+    maxlength="30"
+>
+
     <div class="top-bar">
         <p id="timer">⏱️ Time: 15</p>
         <p id="score">🏆 Score: 0</p>
@@ -271,6 +278,25 @@ function checkAnswer(answer) {
         "🏆 Score: " + score;
 }
 
+async function saveScore() {
+
+    let name = document.getElementById("playerName").value.trim();
+
+    if (name === "") {
+        name = "Anonymous";
+    }
+
+    await fetch("/api/scores", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: name,
+            score: score
+        })
+    });
+}
 
 function nextQuestion() {
 
@@ -283,6 +309,35 @@ function nextQuestion() {
 
     } else {
 
+        saveScore();
+         
+    async function showLeaderboard() {
+
+    let response = await fetch("/api/scores");
+
+    let scores = await response.json();
+
+    let leaderboard = "<h2>🏆 Leaderboard</h2>";
+
+    if (scores.length === 0) {
+        leaderboard += "<p>अभी कोई score नहीं है।</p>";
+    } else {
+        scores.forEach(function(item, index) {
+
+            leaderboard +=
+                "<p>" +
+                (index + 1) +
+                ". " +
+                item.name +
+                " — " +
+                item.score +
+                "</p>";
+        });
+    }
+
+    document.getElementById("options").innerHTML =
+        leaderboard;
+}
         document.getElementById("question").innerText =
             "🎉 Quiz Complete!";
 
@@ -298,6 +353,8 @@ function nextQuestion() {
 
         document.getElementById("next").style.display =
             "none";
+
+        showLeaderboard();
     }
 }
 

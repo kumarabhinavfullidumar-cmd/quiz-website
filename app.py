@@ -1,6 +1,34 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 
 app = Flask(__name__)
+
+scores = []
+
+@app.route("/api/scores", methods=["POST"])
+def save_score():
+    data = request.json
+
+    name = data.get("name")
+    score = data.get("score")
+
+    scores.append({
+        "name": name,
+        "score": score
+    })
+
+    return jsonify({
+        "message": "Score saved!"
+    })
+
+@app.route("/api/scores")
+def get_scores():
+    sorted_scores = sorted(
+        scores,
+        key=lambda x: x["score"],
+        reverse=True
+    )
+
+    return jsonify(sorted_scores)
 
 questions = [
 
