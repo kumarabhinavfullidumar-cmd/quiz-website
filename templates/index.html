@@ -365,7 +365,44 @@
                 gap: 10px;
             }
         }
-    </style>
+
+ .back-home {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 18px;
+    border: 2px solid #09295f;
+    border-radius: 12px;
+    background: white;
+    color: #09295f;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.back-home:hover {
+    background: #eef4ff;
+}
+
+#playAgain {
+    width: 100%;
+    padding: 14px;
+    margin-top: 18px;
+    border: none;
+    border-radius: 12px;
+    background: #09295f;
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#playAgain:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+    
+</style>
 </head>
 
 <body>
@@ -476,6 +513,10 @@
 
         <h2>🧠 Let's Start the Quiz!</h2>
 
+        <button id="backHome" class="back-home" onclick="backToHome()">
+    🏠 Back to Home
+</button>
+
         <input
             id="playerName"
             type="text"
@@ -557,37 +598,113 @@ let score = 0;
 let timeLeft = 15;
 let timer;
 
+
+/* START QUIZ */
+
 function startQuiz() {
+
     document.getElementById("quiz-section").style.display = "block";
+
+    document.getElementById("quiz-section").scrollIntoView({
+        behavior: "smooth"
+    });
+
+    currentQuestion = 0;
+    score = 0;
+
+    document.getElementById("score").innerText =
+        "🏆 Score: 0";
+
+    document.getElementById("next").style.display =
+        "block";
+
+    showQuestion();
+}
+
+
+/* BACK TO HOME */
+
+function backToHome() {
+
+    clearInterval(timer);
+
+    document.getElementById("quiz-section").style.display =
+        "none";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+/* PLAY AGAIN */
+
+function playAgain() {
+
+    clearInterval(timer);
+
+    currentQuestion = 0;
+    score = 0;
+
+    document.getElementById("score").innerText =
+        "🏆 Score: 0";
+
+    document.getElementById("next").style.display =
+        "block";
+
+    let oldButton =
+        document.getElementById("playAgain");
+
+    if (oldButton) {
+        oldButton.remove();
+    }
+
+    showQuestion();
 
     document.getElementById("quiz-section").scrollIntoView({
         behavior: "smooth"
     });
 }
 
+
+/* LOAD QUESTIONS */
+
 async function loadQuiz() {
 
-    let response = await fetch("/api/questions");
+    let response =
+        await fetch("/api/questions");
 
-    questions = await response.json();
+    questions =
+        await response.json();
 
     showQuestion();
 }
 
 
+/* SHOW QUESTION */
+
 function showQuestion() {
 
     clearInterval(timer);
+
+    if (questions.length === 0) {
+        return;
+    }
 
     timeLeft = 15;
 
     document.getElementById("timer").innerText =
         "⏱️ Time: " + timeLeft;
 
-    let q = questions[currentQuestion];
-  
+    let q =
+        questions[currentQuestion];
+
     document.getElementById("questionNumber").innerText =
-    "Question " + (currentQuestion + 1) + " / " + questions.length;
+        "Question " +
+        (currentQuestion + 1) +
+        " / " +
+        questions.length;
 
     document.getElementById("question").innerText =
         q.question;
@@ -602,60 +719,117 @@ function showQuestion() {
         let button =
             document.createElement("button");
 
-        button.innerText = option;
+        button.innerText =
+            option;
 
-        button.onclick = function() {
-
-            checkAnswer(option);
-
-        };
+        button.onclick =
+            function() {
+                checkAnswer(option);
+            };
 
         options.appendChild(button);
 
     });
 
 
-    timer = setInterval(function() {
+    /* TIMER */
 
-        timeLeft--;
+    timer =
+        setInterval(function() {
 
-        document.getElementById("timer").innerText =
-            "⏱️ Time: " + timeLeft;
+            timeLeft--;
 
-        if (timeLeft <= 0) {
+            document.getElementById("timer").innerText =
+                "⏱️ Time: " + timeLeft;
 
-            clearInterval(timer);
+            if (timeLeft <= 0) {
 
-            alert("⏰ Time Up!");
+                clearInterval(timer);
 
-        }
+                let buttons =
+                    document.querySelectorAll(
+                        "#options button"
+                    );
 
-    }, 1000);
+                buttons.forEach(function(button) {
+
+                    button.disabled = true;
+
+                    if (
+                        button.innerText ===
+                        questions[currentQuestion].answer
+                    ) {
+
+                        button.style.background =
+                            "#d4edda";
+
+                        button.style.borderColor =
+                            "#28a745";
+                    }
+
+                });
+
+                alert("⏰ Time Up!");
+
+            }
+
+        }, 1000);
 }
 
+
+/* CHECK ANSWER */
 
 function checkAnswer(answer) {
 
     clearInterval(timer);
 
-    let buttons = document.querySelectorAll("#options button");
-    let correctAnswer = questions[currentQuestion].answer;
+    let buttons =
+        document.querySelectorAll(
+            "#options button"
+        );
+
+    let correctAnswer =
+        questions[currentQuestion].answer;
+
 
     buttons.forEach(function(button) {
 
         button.disabled = true;
 
-        if (button.innerText === correctAnswer) {
-            button.style.background = "#d4edda";
-            button.style.borderColor = "#28a745";
+
+        /* Correct answer */
+
+        if (
+            button.innerText ===
+            correctAnswer
+        ) {
+
+            button.style.background =
+                "#d4edda";
+
+            button.style.borderColor =
+                "#28a745";
         }
 
-        if (button.innerText === answer && answer !== correctAnswer) {
-            button.style.background = "#f8d7da";
-            button.style.borderColor = "#dc3545";
+
+        /* Wrong answer */
+
+        if (
+            button.innerText === answer &&
+            answer !== correctAnswer
+        ) {
+
+            button.style.background =
+                "#f8d7da";
+
+            button.style.borderColor =
+                "#dc3545";
         }
 
     });
+
+
+    /* Increase score */
 
     if (answer === correctAnswer) {
 
@@ -663,11 +837,41 @@ function checkAnswer(answer) {
 
         document.getElementById("score").innerText =
             "🏆 Score: " + score;
-
     }
 
 }
 
+
+/* SAVE SCORE */
+
+async function saveScore() {
+
+    let name =
+        document.getElementById("playerName").value.trim();
+
+    if (name === "") {
+        name = "Anonymous";
+    }
+
+    await fetch("/api/scores", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            name: name,
+            score: score
+        })
+
+    });
+
+}
+
+
+/* SHOW LEADERBOARD */
 
 async function showLeaderboard() {
 
@@ -707,11 +911,16 @@ async function showLeaderboard() {
 }
 
 
+/* NEXT QUESTION */
+
 async function nextQuestion() {
 
     currentQuestion++;
 
-    if (currentQuestion < questions.length) {
+    if (
+        currentQuestion <
+        questions.length
+    ) {
 
         showQuestion();
 
@@ -721,31 +930,95 @@ async function nextQuestion() {
 
         await saveScore();
 
+
+        /* Final result */
+
         document.getElementById("question").innerText =
             "🎉 Quiz Complete!";
 
+
+        document.getElementById("questionNumber").innerText =
+            "🏆 Quiz Finished";
+
+
+        let percentage =
+            Math.round(
+                (score / questions.length) * 100
+            );
+
+
         document.getElementById("options").innerHTML =
+
             "<div style='text-align:center'>" +
+
             "<h2>🏆 Final Score</h2>" +
+
             "<h2>" +
             score +
-            "/" +
+            " / " +
             questions.length +
             "</h2>" +
+
+            "<p>📊 Percentage: " +
+            percentage +
+            "%</p>" +
+
             "</div>";
+
+
+        /* Hide Next button */
 
         document.getElementById("next").style.display =
             "none";
 
+
+        /* Remove old Play Again button */
+
+        let oldButton =
+            document.getElementById("playAgain");
+
+        if (oldButton) {
+            oldButton.remove();
+        }
+
+
+        /* Create Play Again button */
+
+        let playAgainButton =
+            document.createElement("button");
+
+        playAgainButton.innerText =
+            "🔄 Play Again";
+
+        playAgainButton.id =
+            "playAgain";
+
+        playAgainButton.onclick =
+            function() {
+                playAgain();
+            };
+
+
+        document.querySelector(".quiz-box")
+            .appendChild(playAgainButton);
+
+
+        /* Leaderboard */
+
         await showLeaderboard();
 
     }
+
 }
 
+
+/* START */
 
 loadQuiz();
 
 </script>
+
+
 
 </body>
 </html>
