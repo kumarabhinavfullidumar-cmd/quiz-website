@@ -1,6 +1,78 @@
-from flask import Flask, jsonify, render_template, request
-
+from flask import Flask, render_template, jsonify, request, redirect, url_for
+import resend
 app = Flask(__name__)
+
+import os
+import secrets
+import hashlib
+import time
+
+resend.api_key = os.environ.get("RESEND_API_KEY")
+
+otp_data = {}
+
+@app.route("/api/send-otp", methods=["POST"])
+def send_otp():
+    data = request.json
+    email = data.get("email")
+
+    if not email:
+        return jsonify({"error": "Email is required"}), 400
+
+    otp = str(secrets.randbelow(900000) + 100000)
+
+    otp_data[email] = {
+        "otp_hash": hashlib.sha256(otp.encode()).hexdigest(),
+        "expires": time.time() + 300
+    }
+
+    resend.Emails.send({
+        "from": "GK Quiz <onboarding@resend.dev>",
+        "to": [email],
+        "subject": "Your GK Quiz OTP",
+        "html": f"<h2>Your OTP is: {otp}</h2><p>This OTP expires in 5 minutes.</p>"
+    })
+
+    return jsonify({"message": "OTP sent successfully"})
+
+
+@app.route("/api/verify-otp", methods=["POST"])
+def verify_otp():
+    data = request.json
+
+    email = data.get("email")
+    otp = data.get("otp")
+
+    if not email or not otp:
+        return jsonify({"error": "Email and OTP are required"}), 400
+
+    saved = otp_data.get(email)
+
+    if not saved:
+        return jsonify({"error": "OTP not found. Please request a new OTP."}), 400
+
+    if time.time() > saved["expires"]:
+        otp_data.pop(email, None)
+        return jsonify({"error": "OTP expired. Please request a new OTP."}), 400
+
+    otp_hash = hashlib.sha256(otp.encode()).hexdigest()
+
+    if otp_hash != saved["otp_hash"]:
+        return jsonify({"error": "Invalid OTP"}), 400
+
+    otp_data.pop(email, None)
+
+    return jsonify({
+        "message": "OTP verified successfully"
+    })
+
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+@app.route("/signup")
+def signup():
+    return render_template("signup.html")
 
 scores = []
 
